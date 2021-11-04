@@ -13,9 +13,9 @@ async fn main() {
 		use colored::control;
 
 		// legacy support
-		match control::set_virtual_terminal(true) {
-			Ok(_) => {}
-			Err(_) => println!("Failed to set virtual terminal"),
+		#[cfg(windows)]
+		if let Err(_) = control::set_virtual_terminal(true) {
+			println!("Failed to set virtual terminal")
 		};
 	} else {
 		// clear console
@@ -61,7 +61,7 @@ async fn main() {
 		.event_handler(Handler::new(guild_id))
 		.intents(GatewayIntents::GUILD_PRESENCES | GatewayIntents::GUILD_MEMBERS)
 		.await
-		.unwrap_or_else(|_| { panic!("{}", "Error creating client".red().to_string()) });
+		.unwrap_or_else(|_| panic!("{}", "Error creating client".red().to_string()));
 
 	// start client or panic
 	if let Err(why) = client.start().await {
