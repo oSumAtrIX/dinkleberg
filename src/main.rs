@@ -61,7 +61,7 @@ async fn main() {
 		.event_handler(Handler::new(guild_id))
 		.intents(GatewayIntents::GUILD_PRESENCES | GatewayIntents::GUILD_MEMBERS)
 		.await
-		.expect(&"Error creating client".red());
+		.unwrap_or_else(|_| { panic!("{}", "Error creating client".red().to_string()) });
 
 	// start client or panic
 	if let Err(why) = client.start().await {
