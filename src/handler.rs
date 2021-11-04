@@ -136,7 +136,7 @@ impl EventHandler for Handler {
 				);
 			} else {
 				// user set to invisible
-				println!("{}", format!("Catched {} dinkleberging!", user).red());
+				println!("{}", format!("Caught {} dinkleberging!", user).red());
 			}
 			tracked_users.online -= 1;
 		}
