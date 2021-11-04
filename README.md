@@ -4,7 +4,7 @@
 
 Find out who is using the invisible status on discord
 
-<img src="assets/icon.png" alt="drawing" width="500"/>
+<img src="assets/icon.png" alt="logo" width="500"/>
 
 <!--
 
@@ -20,6 +20,10 @@ Find out who is using the invisible status on discord
 -->
 
 </div>
+
+## Preview
+
+<img src="assets/preview.png" alt="preview image"/>
 
 ## Disclaimer
 
