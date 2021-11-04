@@ -24,6 +24,6 @@ winres = "^0.1"
 
 [package.metadata.winres]
 OriginalFilename = "dinkleberg.exe"
-FileDescription = "Find out who is using the invisible status on discord"
+FileDescription = "Find out who is pretending to be offline"
 ProductName = "Dinkleberg"
 ProductVersion = "0.0.1"
