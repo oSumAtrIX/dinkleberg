@@ -88,7 +88,7 @@ Usage: dinkleberg.exe <guid_id>
 
 ## Known issues
 
--   Occasional detection of mobile clients
+-   Occasional false detection of mobile clients
 
 ## Authors
 
