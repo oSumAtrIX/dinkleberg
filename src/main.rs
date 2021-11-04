@@ -43,7 +43,7 @@ async fn main() {
 	// print usage
 	let args: Vec<String> = std::env::args().collect();
 	if args.len() < 2 {
-		println!("{}", format!("Usage: {} <command>", args[0]).red());
+		println!("{}", format!("Usage: {} <guid_id>", args[0]).red());
 		return;
 	}
 
