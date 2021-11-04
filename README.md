@@ -61,7 +61,7 @@ The bot needs the following gateway intents to operate.
 
 `GUILD_PRESENCES`
 
-`DISCORD_TOKEN`
+`GUILD_MEMBERS`
 
 ## Environment variables
 
