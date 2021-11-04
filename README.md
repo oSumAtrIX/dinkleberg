@@ -80,11 +80,6 @@ $ dinkleberg.exe
 ........:::....::..::::..::..::::..::........::........::........:::........::..:::::..:::......::::
 
 Usage: dinkleberg.exe <guid_id>
-..but default settings have been created successfully. Edit them and run the program again.
-
-$ down_on_spot.exe
-Usage:
-down_on_spot.exe (track_url | album_url | playlist_url | artist_url)
 ```
 
 ## Known issues
