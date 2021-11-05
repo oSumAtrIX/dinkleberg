@@ -1,16 +1,21 @@
-use std::{fs::File, io::{Error, Read, Write}};
+use std::{
+	fs::File,
+	io::{Error, Read, Write},
+};
 
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct Settings {
-	pub use_widget : bool
+	pub use_widget: bool,
+	pub include_only: Vec<u64>,
 }
 
 impl Settings {
 	pub fn new() -> Settings {
 		Settings {
-			use_widget : true
+			use_widget: true,
+			include_only: vec![],
 		}
 	}
 
@@ -22,7 +27,7 @@ impl Settings {
 	}
 
 	pub fn load() -> Result<Settings, Error> {
-		let mut file = match File::open("settings.json"){
+		let mut file = match File::open("settings.json") {
 			Ok(file) => file,
 			Err(_) => {
 				let settings = Settings::new();
@@ -35,5 +40,4 @@ impl Settings {
 		file.read_to_string(&mut buf)?;
 		Ok(serde_json::from_str(&buf)?)
 	}
-
 }

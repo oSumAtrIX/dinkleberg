@@ -78,6 +78,8 @@ For that, widgets must be enabled in the targets server settings under `Server S
 
 Set `use_widget` in the `settings.json` to false to use the discord bot API endpoint instead.
 
+Adding user ids to `include_only` list, separated by a comma, will only track those users. Leaving it empty as-is will track all users in the targeted guild. Filtering helps with rate limiting and false detection a lot and should be considered to be used.
+
 ## Usage/ Examples
 
 ```text

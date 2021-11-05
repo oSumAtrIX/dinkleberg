@@ -17,6 +17,7 @@ pub struct Handler {
 	guild_id: u64,
 	users: Mutex<Users>,
 	use_widget: bool,
+	include_only: Vec<u64>,
 }
 
 struct Users {
@@ -38,6 +39,7 @@ impl Handler {
 				count: 0,
 			}),
 			use_widget: settings.use_widget,
+			include_only: settings.include_only.clone(),
 		}
 	}
 
@@ -56,21 +58,34 @@ impl Handler {
 				return Ok((0, 0));
 			}
 		};
-		let presence_count= match self.use_widget {
+		let presence_count = match self.use_widget {
 			true => {
-				reqwest::blocking::get(&format!("https://canary.discord.com/api/guilds/{}/widget.json", guild_id))?.json::<Widget>()?.presence_count
-			},
+				reqwest::blocking::get(&format!(
+					"https://canary.discord.com/api/guilds/{}/widget.json",
+					guild_id
+				))?
+				.json::<Widget>()?
+				.presence_count
+			}
 			false => guild.approximate_presence_count.unwrap(),
 		};
 
-		Ok((
-			presence_count,
-			guild.approximate_member_count.unwrap(),
-		))
+		Ok((presence_count, guild.approximate_member_count.unwrap()))
 	}
 
+	// skip the user if they are not in the include_only list
+	fn skip_cycle(&self, id: &u64) -> bool {
+		if self.include_only.is_empty() || self.include_only.contains(id) {
+			return false;
+		}
+		true
+	}
 	// update user count and online count when a user joins or leaves the server to keep the count accurate
 	async fn refresh_users_count(&self, _ctx: Context, _guild_id: GuildId, user: User) {
+		if self.skip_cycle(&user.id.0) {
+			return;
+		}
+
 		let approximate_users = match self.get_approximate_user_counts(&_ctx, _guild_id).await {
 			Ok(users) => users,
 			Err(e) => {
@@ -78,7 +93,7 @@ impl Handler {
 				return;
 			}
 		};
-	
+
 		let approximate_online = approximate_users.0;
 		let approximate_count = approximate_users.1;
 		let mut tracked_users = self.users.lock().await;
@@ -128,21 +143,25 @@ impl EventHandler for Handler {
 			return;
 		}
 
+		if self.skip_cycle(&_new_data.presence.user_id.0) {
+			return;
+		}
+
 		let mut tracked_users = self.users.lock().await;
 
 		let (users_online, _) = match self
-				.get_approximate_user_counts(&_ctx, presence_guild)
-				.await
-			{
-				Ok(users) => users,
-				Err(e) => {
-					println!("{}", format!("Could not get user count: {}", e).red());
-					return;
-				}
-			};
+			.get_approximate_user_counts(&_ctx, presence_guild)
+			.await
+		{
+			Ok(users) => users,
+			Err(e) => {
+				println!("{}", format!("Could not get user count: {}", e).red());
+				return;
+			}
+		};
 
 		if let Some(user) = _new_data.presence.user {
-			if users_online != tracked_users.online{
+			if users_online != tracked_users.online {
 				tracked_users.online += 1;
 			}
 
@@ -158,8 +177,6 @@ impl EventHandler for Handler {
 		}
 
 		if _new_data.presence.status == OnlineStatus::Offline {
-			
-
 			let user = _new_data
 				.presence
 				.user_id
@@ -196,7 +213,10 @@ impl EventHandler for Handler {
 		{
 			Ok(users) => users,
 			Err(e) => {
-				println!("{}", format!("Could not initialize users count: {}", e).red());
+				println!(
+					"{}",
+					format!("Could not initialize users count: {}", e).red()
+				);
 				return;
 			}
 		};
