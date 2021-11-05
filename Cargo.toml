@@ -2,7 +2,7 @@ cargo-features = ["strip"]
 
 [package]
 name = "dinkleberg"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 authors = ["oSumAtrIX <johan.melkonyan1@web.de>"]
 build = "build.rs"
@@ -29,4 +29,4 @@ winres = "^0.1"
 OriginalFilename = "dinkleberg.exe"
 FileDescription = "Find out who is pretending to be offline"
 ProductName = "Dinkleberg"
-ProductVersion = "0.1.2"
+ProductVersion = "0.1.3"
