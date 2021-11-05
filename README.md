@@ -69,6 +69,15 @@ To use this project you will need to set the following enviroment key with your 
 
 `DISCORD_TOKEN`
 
+## Settings
+
+A default `settings.json` file will be generated when running the program at the first time.
+
+On big servers (+999 members), it is recommended to use the official API since more rate-limiting applies to the widget endpoint. On the other hand, the official API is way less reliable and may cause more false detections, so it is recommended to use the widget as much as possible.
+For that, widgets must be enabled in the targets server settings under `Server Settings > Widget > Enable server widget`.
+
+Set `use_widget` in the `settings.json` to false to use the discord bot API endpoint instead.
+
 ## Usage/ Examples
 
 ```text
