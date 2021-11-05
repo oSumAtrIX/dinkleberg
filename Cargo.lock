@@ -191,7 +191,7 @@ dependencies = [
 
 [[package]]
 name = "dinkleberg"
-version = "0.0.1"
+version = "0.1.2"
 dependencies = [
  "colored",
  "reqwest 0.10.10",
