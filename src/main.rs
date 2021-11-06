@@ -7,9 +7,12 @@ use colored::Colorize;
 use handler::Handler;
 use serenity::{client::bridge::gateway::GatewayIntents, prelude::*};
 use std::env;
+use proctitle::set_title;
 
 #[tokio::main]
 async fn main() {
+	set_title("Dinkleberg");
+
 	if cfg!(target_os = "windows") {
 		// clear console
 		std::process::Command::new("cmd")

@@ -21,6 +21,7 @@ reqwest =  { version = "0.10.0", features = ["json", "blocking"] }
 colored = "2.0.0"
 tokio = { version = "1.13.0", features =  ["full"] }
 serenity = { version = "0.10.9", default-features = false, features = ["rustls_backend", "client", "gateway" , "model"] }
+proctitle = "0.1.1"
 
 [target.'cfg(windows)'.build-dependencies]
 winres = "^0.1"

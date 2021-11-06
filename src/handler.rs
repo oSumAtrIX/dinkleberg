@@ -12,7 +12,6 @@ use serenity::{
 	},
 	prelude::*,
 };
-
 pub struct Handler {
 	guild_id: u64,
 	users: Mutex<Users>,
@@ -20,11 +19,14 @@ pub struct Handler {
 	include_only: Vec<u64>,
 }
 
+// counter for the number of present users in the guild
+
 struct Users {
 	online: u64,
 	count: u64,
 }
 
+// response json structure for approximated user count from the widget api
 #[derive(Deserialize, Debug)]
 struct Widget {
 	presence_count: u64,
@@ -49,7 +51,7 @@ impl Handler {
 	async fn get_approximate_user_counts(
 		&self,
 		ctx: &Context,
-		guild_id: GuildId,
+		guild_id: &GuildId,
 	) -> Result<(u64, u64), reqwest::Error /* replace with generic error */> {
 		let guild = match guild_id.to_partial_guild_with_counts(ctx).await {
 			Ok(guild) => guild,
@@ -80,13 +82,24 @@ impl Handler {
 		}
 		true
 	}
-	// update user count and online count when a user joins or leaves the server to keep the count accurate
-	async fn refresh_users_count(&self, _ctx: Context, _guild_id: GuildId, user: User) {
+}
+
+#[async_trait]
+impl EventHandler for Handler {
+	// fix approximate user count when a user starts membership with the guild
+	// this is necessary in case a user joins invisible so we can adjust our correct online users offset
+	async fn guild_member_addition(&self, _ctx: Context, _guild_id: GuildId, _new_member: Member) {
+		if self.guild_id != _guild_id.0 {
+			return;
+		}
+
+		let user = &_new_member.user;
+
 		if self.skip_cycle(&user.id.0) {
 			return;
 		}
 
-		let approximate_users = match self.get_approximate_user_counts(&_ctx, _guild_id).await {
+		let approximate_users = match self.get_approximate_user_counts(&_ctx, &_guild_id).await {
 			Ok(users) => users,
 			Err(e) => {
 				println!("{}", format!("Could not refresh users count: {}", e).red());
@@ -96,11 +109,12 @@ impl Handler {
 
 		let approximate_online = approximate_users.0;
 		let approximate_count = approximate_users.1;
-		let mut tracked_users = self.users.lock().await;
+		let mut current_users = self.users.lock().await;
 
-		tracked_users.online = approximate_online;
+		// if the user is invisible, still count the user as online
+		current_users.online = approximate_online;
 
-		if approximate_count > tracked_users.count {
+		if approximate_count > current_users.count {
 			println!(
 				"{}",
 				format!(
@@ -109,6 +123,7 @@ impl Handler {
 				)
 				.green()
 			);
+			current_users.count += 1;
 		} else {
 			println!(
 				"{}",
@@ -118,37 +133,53 @@ impl Handler {
 				)
 				.green()
 			);
+			current_users.count -= 1;
+		}
+	}
+
+	// decrement the membership and online count when a user leaves the guild
+	async fn guild_member_removal(&self, _ctx: Context, _guild_id: GuildId, _kicked: User) {
+		if self.guild_id != _guild_id.0 {
+			return;
 		}
 
-		tracked_users.count = approximate_count;
-	}
-}
-
-#[async_trait]
-impl EventHandler for Handler {
-	async fn guild_member_addition(&self, _ctx: Context, _guild_id: GuildId, _new_member: Member) {
-		self.refresh_users_count(_ctx, _guild_id, _new_member.user)
-			.await;
-	}
-
-	async fn guild_member_removal(&self, _ctx: Context, _guild_id: GuildId, _kicked: User) {
-		self.refresh_users_count(_ctx, _guild_id, _kicked).await;
+		let mut current_users = self.users.lock().await;
+		current_users.online -= 1;
+		current_users.count = 1;
 	}
 
 	// get the real status when a user changes theirs
 	async fn presence_update(&self, _ctx: Context, _new_data: PresenceUpdateEvent) {
-		let presence_guild = _new_data.guild_id.unwrap();
+		let presence_guild = &_new_data.guild_id.unwrap();
 
-		if presence_guild != self.guild_id {
+		// if the guild is not the guild we are tracking, return
+		if presence_guild.0 != self.guild_id {
 			return;
 		}
 
-		if self.skip_cycle(&_new_data.presence.user_id.0) {
+		let presence = &_new_data.presence;
+
+		// Skip, if the user presence does not explicitly change
+		// but just the status for example
+		//
+		// this is to prevent the bot from getting rate limited
+		// due to getting the approximate user count too often for no reason
+		//
+		// below we repeat the checks to differentiate the status change
+		if presence.status != OnlineStatus::Offline {
+			if None == presence.user {
+				return;
+			}
+		}
+
+		// skip if the user is not in the include_only list if list not empty
+		if self.skip_cycle(&presence.user_id.0) {
 			return;
 		}
 
-		let mut tracked_users = self.users.lock().await;
+		let mut current_users = self.users.lock().await;
 
+		// get the approximate user counts
 		let (users_online, _) = match self
 			.get_approximate_user_counts(&_ctx, presence_guild)
 			.await
@@ -160,55 +191,34 @@ impl EventHandler for Handler {
 			}
 		};
 
-		if let Some(user) = _new_data.presence.user {
-			if users_online != tracked_users.online {
-				tracked_users.online += 1;
-			}
+		// this is true if the user changes their status to offline
+		if presence.status == OnlineStatus::Offline {
+			let user = presence.user_id.to_user(&_ctx).await.unwrap().name;
 
-			println!(
-				"{}",
-				format!(
-					"{} is now online, adding up to a total of {} users online",
-					user.name, tracked_users.online
-				)
-				.green()
-			);
-			return;
+			// comparing the online count to the approximate online count
+			// if below the approximate online count, then the user is offline
+			if current_users.online > users_online {
+				println!("{}", format!("[OFF] {}", user).green());
+			}
+			// if above the approximate online count, then the user is invisible
+			else {
+				println!("{}", format!("[INVISIBLE] {}", user).red());
+			}
+		}
+		// this is true if the user changes their status to online
+		else if let Some(user) = &presence.user {
+			println!("{}", format!("[ON] {}", user.name).green());
 		}
 
-		if _new_data.presence.status == OnlineStatus::Offline {
-			let user = _new_data
-				.presence
-				.user_id
-				.to_user(&_ctx)
-				.await
-				.unwrap()
-				.name;
-
-			if users_online < tracked_users.online {
-				// user really went offline
-				println!(
-					"{}",
-					format!(
-						"{} is now offline, adding up to a total of {} offline users",
-						user,
-						tracked_users.count - tracked_users.online + 1
-					)
-					.green()
-				);
-			} else {
-				// user set to invisible
-				println!("{}", format!("Caught {} dinkleberging!", user).red());
-			}
-			tracked_users.online -= 1;
-		}
+		// fix offset
+		current_users.online = users_online;
 	}
 
 	// initialize the approximate user count as a starting point to calculate the user offsets
 	// when a user joins or leaves or changes the online status
 	async fn ready(&self, _ctx: Context, _: Ready) {
 		let (users_count, users_online) = match self
-			.get_approximate_user_counts(&_ctx, GuildId(self.guild_id))
+			.get_approximate_user_counts(&_ctx, &GuildId(self.guild_id))
 			.await
 		{
 			Ok(users) => users,
@@ -221,10 +231,10 @@ impl EventHandler for Handler {
 			}
 		};
 
-		let mut tracked_users = self.users.lock().await;
-		tracked_users.online = users_count;
-		tracked_users.count = users_online;
+		let mut current_users = self.users.lock().await;
+		current_users.online = users_count;
+		current_users.count = users_online;
 
-		println!("{}", format!("Up and running, ready to catch those Dinklebergs!\n\nTargeting guild: {}\nInitial online count: {}\nInitial offline count: {}\n", self.guild_id, tracked_users.online, tracked_users.count - tracked_users.online).yellow());
+		println!("{}", format!("Up and running, ready to catch those Dinklebergs!\n\n[GUILD ID]: {}\n[ON]: {}\n[OFF]: {}\n", self.guild_id, current_users.online, current_users.count - current_users.online).yellow());
 	}
 }
