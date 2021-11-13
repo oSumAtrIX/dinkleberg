@@ -6,19 +6,14 @@ Find out who pretends to be offline on discord
 
 <img src="assets/icon.svg" alt="logo" width="500"/>
 
-<!--
-
 <br>
-
-[![Build project](https://github.com/oSumAtrIX/dinkleberg/actions/workflows/rust.yml/badge.svg)](https://github.com/oSumAtrIX/dinkleberg/actions/workflows/rust.yml)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/4474e5fcc9064562b5d653601ee356f3)](https://www.codacy.com/gh/oSumAtrIX/DownOnSpot/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=oSumAtrIX/DownOnSpot&amp;utm_campaign=Badge_Grade)
-[![GitHub license](https://img.shields.io/github/license/oSumAtrIX/dinkleberg)](https://github.com/oSumAtrIX/dinkleberg/blob/main/LICENSE)
-[![GitHub issues](https://img.shields.io/github/issues/oSumAtrIX/dinkleberg)](https://github.com/oSumAtrIX/dinkleberg/issues)
-[![GitHub forks](https://img.shields.io/github/forks/oSumAtrIX/dinkleberg)](https://github.com/oSumAtrIX/dinkleberg/network)
-[![GitHub stars](https://img.shields.io/github/stars/oSumAtrIX/dinkleberg)](https://github.com/oSumAtrIX/dinkleberg/stargazers)
-[![Stability: Experimental](https://masterminds.github.io/stability/experimental.svg)](https://masterminds.github.io/stability/experimental.html)
--->
-
+ 
+ [![Build project](https://github.com/oSumAtrIX/dinkleberg/actions/workflows/rust.yml/badge.svg)](https://github.com/oSumAtrIX/dinkleberg/actions/workflows/rust.yml)
+ [![Codacy Badge](https://app.codacy.com/project/badge/Grade/28e7f3c932ad4f2d88bcb27f45668dab)](https://www.codacy.com/gh/oSumAtrIX/dinkleberg/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=oSumAtrIX/dinkleberg&amp;utm_campaign=Badge_Grade)
+ [![GitHub stars](https://img.shields.io/github/stars/oSumAtrIX/dinkleberg)](https://github.com/oSumAtrIX/dinkleberg/stargazers)
+ [![GitHub issues](https://img.shields.io/github/issues/oSumAtrIX/dinkleberg)](https://github.com/oSumAtrIX/dinkleberg/issues)
+ [![Stability: Active](https://masterminds.github.io/stability/active.svg)](https://masterminds.github.io/stability/active.html)
+ [![GitHub license](https://img.shields.io/github/license/oSumAtrIX/dinkleberg)](https://github.com/oSumAtrIX/dinkleberg/blob/main/LICENSE)
 </div>
 
 ## About
