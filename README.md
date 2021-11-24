@@ -2,7 +2,7 @@
 
 # Dinkleberg
 
-Find out who pretends to be offline on discord
+Catch users faking their offline status on discord
 
 <img src="assets/icon.svg" alt="logo" width="500"/>
 

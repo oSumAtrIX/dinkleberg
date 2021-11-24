@@ -28,6 +28,6 @@ winres = "^0.1"
 
 [package.metadata.winres]
 OriginalFilename = "dinkleberg.exe"
-FileDescription = "Find out who pretends to be offline"
+FileDescription = "Catch users faking their offline status on discord"
 ProductName = "Dinkleberg"
 ProductVersion = "0.3.4"
