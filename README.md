@@ -101,7 +101,7 @@ Usage: dinkleberg.exe <guid_id>
 
 ## Known issues
 
--   Possibility to false detect mobile discord clients
+-   Possibility to false detect mobile discord clients (mobile client reports status too late)
 
 ## Authors
 
