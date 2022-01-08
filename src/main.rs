@@ -49,14 +49,14 @@ async fn main() {
 	// print usage
 	let args: Vec<String> = std::env::args().collect();
 	if args.len() < 2 {
-		println!("{}", format!("Usage: {} <guid_id>", args[0]).red());
+		println!("{}", format!("Usage: {} <guild_id>", args[0]).red());
 		return;
 	}
 
 	// parse guild
 	let guild_id = match (&args[1]).parse::<u64>() {
 		Ok(n) => n,
-		Err(_) => panic!("{}", "Could not parse guid id".red()),
+		Err(_) => panic!("{}", "Could not parse guild id".red()),
 	};
 
 	let settings = match Settings::load() {
