@@ -1,4 +1,3 @@
-use tokio::time::{sleep, Duration};
 use crate::settings::Settings;
 use colored::Colorize;
 use serde::Deserialize;
@@ -13,6 +12,7 @@ use serenity::{
 	},
 	prelude::*,
 };
+use tokio::time::{sleep, Duration};
 pub struct Handler {
 	guild_id: u64,
 	users: Mutex<Users>,
@@ -42,7 +42,7 @@ impl Handler {
 				online: 0,
 				count: 0,
 			}),
-			sleep_time : settings.sleep_time,
+			sleep_time: settings.sleep_time,
 			use_widget: settings.use_widget,
 			include_only: settings.include_only.clone(),
 		}
@@ -65,7 +65,6 @@ impl Handler {
 		};
 		let presence_count = match self.use_widget {
 			true => {
-
 				if self.sleep_time > 0 {
 					sleep(Duration::from_millis(self.sleep_time)).await;
 				}
@@ -125,24 +124,10 @@ impl EventHandler for Handler {
 		let name = format!("{}#{}", user.name, user.discriminator);
 
 		if approximate_count > current_users.count {
-			println!(
-				"{}",
-				format!(
-					"[JOIN] {}",
-					name
-				)
-				.green()
-			);
+			println!("{}", format!("[JOIN] {}", name).green());
 			current_users.count += 1;
 		} else {
-			println!(
-				"{}",
-				format!(
-					"[LEFT] {}",
-					name
-				)
-				.green()
-			);
+			println!("{}", format!("[LEFT] {}", name).green());
 			current_users.count -= 1;
 		}
 	}
@@ -218,7 +203,10 @@ impl EventHandler for Handler {
 		}
 		// this is true if the user changes their status to online
 		else if let Some(user) = &presence.user {
-			println!("{}", format!("[ON] {}#{}", user.name, user.discriminator).green());
+			println!(
+				"{}",
+				format!("[ON] {}#{}", user.name, user.discriminator).green()
+			);
 		}
 
 		// fix offset

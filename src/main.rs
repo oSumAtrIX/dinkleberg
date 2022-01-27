@@ -5,9 +5,9 @@ use crate::settings::Settings;
 use colored::control;
 use colored::Colorize;
 use handler::Handler;
+use proctitle::set_title;
 use serenity::{client::bridge::gateway::GatewayIntents, prelude::*};
 use std::env;
-use proctitle::set_title;
 
 #[tokio::main]
 async fn main() {
