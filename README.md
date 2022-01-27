@@ -82,7 +82,7 @@ For that, widgets must be enabled in the targets discord server settings under `
 
 - Adding user ids to `include_only` list, separated by a comma, will only track those users. Leaving it empty as-is will track all users in the targeted guild. Filtering helps with rate limiting and false detection a lot and should be considered to be used.
 
-- Increase the `sleep_timer` if discord is too slow to update changes on the member count.
+- Increase the `sleep_timer` if Discord is too slow to update changes on the member count.
 
 ## Usage/ Examples
 
