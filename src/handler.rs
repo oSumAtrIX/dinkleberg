@@ -1,3 +1,4 @@
+use tokio::time::{sleep, Duration};
 use crate::settings::Settings;
 use colored::Colorize;
 use serde::Deserialize;
@@ -16,6 +17,7 @@ pub struct Handler {
 	guild_id: u64,
 	users: Mutex<Users>,
 	use_widget: bool,
+	sleep_time: u64,
 	include_only: Vec<u64>,
 }
 
@@ -40,6 +42,7 @@ impl Handler {
 				online: 0,
 				count: 0,
 			}),
+			sleep_time : settings.sleep_time,
 			use_widget: settings.use_widget,
 			include_only: settings.include_only.clone(),
 		}
@@ -62,6 +65,11 @@ impl Handler {
 		};
 		let presence_count = match self.use_widget {
 			true => {
+
+				if self.sleep_time > 0 {
+					sleep(Duration::from_millis(self.sleep_time)).await;
+				}
+
 				reqwest::blocking::get(&format!(
 					"https://canary.discord.com/api/guilds/{}/widget.json",
 					guild_id
@@ -114,12 +122,14 @@ impl EventHandler for Handler {
 		// if the user is invisible, still count the user as online
 		current_users.online = approximate_online;
 
+		let name = format!("{}#{}", user.name, user.discriminator);
+
 		if approximate_count > current_users.count {
 			println!(
 				"{}",
 				format!(
-					"{} joined the server. Approximation might eventually cause issues at first..",
-					user.name
+					"[JOIN] {}",
+					name
 				)
 				.green()
 			);
@@ -128,8 +138,8 @@ impl EventHandler for Handler {
 			println!(
 				"{}",
 				format!(
-					"{} left the server. Approximation might eventually cause issues at first..",
-					user.name
+					"[LEFT] {}",
+					name
 				)
 				.green()
 			);
@@ -193,21 +203,22 @@ impl EventHandler for Handler {
 
 		// this is true if the user changes their status to offline
 		if presence.status == OnlineStatus::Offline {
-			let user = presence.user_id.to_user(&_ctx).await.unwrap().name;
+			let user = presence.user_id.to_user(&_ctx).await.unwrap();
+			let name = format!("{}#{}", user.name, user.discriminator);
 
 			// comparing the online count to the approximate online count
 			// if below the approximate online count, then the user is offline
 			if current_users.online > users_online {
-				println!("{}", format!("[OFF] {}", user).green());
+				println!("{}", format!("[OFF] {}", name).green());
 			}
 			// if above the approximate online count, then the user is invisible
 			else {
-				println!("{}", format!("[INVISIBLE] {}", user).red());
+				println!("{}", format!("[INVISIBLE] {}", name).red());
 			}
 		}
 		// this is true if the user changes their status to online
 		else if let Some(user) = &presence.user {
-			println!("{}", format!("[ON] {}", user.name).green());
+			println!("{}", format!("[ON] {}#{}", user.name, user.discriminator).green());
 		}
 
 		// fix offset

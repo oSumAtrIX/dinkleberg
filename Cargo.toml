@@ -2,7 +2,7 @@ cargo-features = ["strip"]
 
 [package]
 name = "dinkleberg"
-version = "0.3.4"
+version = "0.4.4"
 edition = "2021"
 authors = ["oSumAtrIX <johan.melkonyan1@web.de>"]
 build = "build.rs"
@@ -17,7 +17,7 @@ panic = "abort"
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
 serde_json = { version = "1.0" }
-reqwest =  { version = "0.10.0", features = ["json", "blocking"] }
+reqwest =  { version = "0.11", features = ["json", "blocking"] }
 colored = "2.0.0"
 tokio = { version = "1.13.0", features =  ["full"] }
 serenity = { version = "0.10.9", default-features = false, features = ["rustls_backend", "client", "gateway" , "model"] }
@@ -30,4 +30,4 @@ winres = "^0.1"
 OriginalFilename = "dinkleberg.exe"
 FileDescription = "Catch users faking their offline status on discord"
 ProductName = "Dinkleberg"
-ProductVersion = "0.3.4"
+ProductVersion = "0.4.4"

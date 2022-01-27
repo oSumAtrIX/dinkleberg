@@ -9,6 +9,7 @@ use serde::{Deserialize, Serialize};
 pub struct Settings {
 	pub use_widget: bool,
 	pub include_only: Vec<u64>,
+	pub sleep_time: u64,
 }
 
 impl Settings {
@@ -16,6 +17,7 @@ impl Settings {
 		Settings {
 			use_widget: true,
 			include_only: vec![],
+			sleep_time: 0,
 		}
 	}
 
