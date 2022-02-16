@@ -1,6 +1,6 @@
 [package]
 name = "dinkleberg"
-version = "0.4.4"
+version = "0.4.5"
 edition = "2021"
 authors = ["oSumAtrIX <johan.melkonyan1@web.de>"]
 build = "build.rs"
@@ -28,4 +28,4 @@ winres = "^0.1"
 OriginalFilename = "dinkleberg.exe"
 FileDescription = "Catch users faking their offline status on discord"
 ProductName = "Dinkleberg"
-ProductVersion = "0.4.4"
+ProductVersion = "0.4.5"

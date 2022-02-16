@@ -13,6 +13,7 @@ use serenity::{
 	prelude::*,
 };
 use tokio::time::{sleep, Duration};
+
 pub struct Handler {
 	guild_id: u64,
 	users: Mutex<Users>,
@@ -63,17 +64,20 @@ impl Handler {
 				return Ok((0, 0));
 			}
 		};
+
 		let presence_count = match self.use_widget {
 			true => {
 				if self.sleep_time > 0 {
 					sleep(Duration::from_millis(self.sleep_time)).await;
 				}
 
-				reqwest::blocking::get(&format!(
+				reqwest::get(&format!(
 					"https://canary.discord.com/api/guilds/{}/widget.json",
 					guild_id
-				))?
-				.json::<Widget>()?
+				))
+				.await?
+				.json::<Widget>()
+				.await?
 				.presence_count
 			}
 			false => guild.approximate_presence_count.unwrap(),
