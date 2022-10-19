@@ -2,7 +2,7 @@
 
 # Dinkleberg
 
-Catch users faking their offline status on discord
+Catch users faking their offline status on Discord
 
 <img src="assets/icon.svg" alt="logo" width="500"/>
 
@@ -18,9 +18,9 @@ Catch users faking their offline status on discord
 
 ## About
 
-Dinkleberg is a discord bot written in Rust to assist tracking of users online status.
-Technically you do not depend on a discord bot token and a discord user token can be used instead if the code is modified properly to support it.
-It can detect if a user is offline, or really just pretending when the user sets its status to invisible on discord.
+Dinkleberg is a Discord bot written in Rust to assist tracking of users online status.
+Technically you do not depend on a Discord bot token and a Discord user token can be used instead if the code is modified properly to support it.
+It can detect if a user is offline, or really just pretending when the user sets its status to invisible on Discord.
 
 ## Preview
 
@@ -67,7 +67,7 @@ The bot needs the following gateway intents to operate.
 
 ## Environment variables
 
-To use this project you will need to set the following environment key with your discord token as the value:
+To use this project you will need to set the following environment key with your Discord token as the value:
 
 - `DISCORD_TOKEN`
 
@@ -75,10 +75,10 @@ To use this project you will need to set the following environment key with your
 
 A default `settings.json` file will be generated when running the program at the first time.
 
-- On big discord servers (+999 members), it is recommended to use the official API since more rate-limiting applies to the widget endpoint. On the other hand, the official discord API is way less reliable and may cause more false detections, so it is recommended to use the widget as much as possible.
-For that, widgets must be enabled in the targets discord server settings under `Server Settings > Widget > Enable server widget`.
+- On big Discord servers (+999 members), it is recommended to use the official API since more rate-limiting applies to the widget endpoint. On the other hand, the official Discord API is way less reliable and may cause more false detections, so it is recommended to use the widget as much as possible.
+For that, widgets must be enabled in the targets Discord server settings under `Server Settings > Widget > Enable server widget`.
 
-- Set `use_widget` in the `settings.json` to false to use the discord bot API endpoint instead.
+- Set `use_widget` in the `settings.json` to false to use the Discord bot API endpoint instead.
 
 - Adding user ids to `include_only` list, separated by a comma, will only track those users. Leaving it empty as-is will track all users in the targeted guild. Filtering helps with rate limiting and false detection a lot and should be considered to be used.
 
@@ -103,7 +103,7 @@ Usage: dinkleberg.exe <guild_id>
 
 ## Known issues
 
--   Possibility to false detect mobile discord clients (mobile client reports status too late)
+-   Possibility to false detect mobile Discord clients (mobile client reports status too late)
 
 ## Authors
 
