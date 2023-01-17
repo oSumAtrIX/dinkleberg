@@ -22,6 +22,10 @@ Dinkleberg is a Discord bot written in Rust to assist tracking of users online s
 Technically you do not depend on a Discord bot token and a Discord user token can be used instead if the code is modified properly to support it.
 It can detect if a user is offline, or really just pretending when the user sets its status to invisible on Discord.
 
+## End of life
+
+Discord has finally addressed and fixed this vulnerability 🎉
+
 ## Preview
 
 <img src="assets/preview.png" alt="preview image"/>
